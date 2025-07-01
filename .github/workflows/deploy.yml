@@ -1,0 +1,29 @@
+name: Lambda 자동 배포
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: AWS 자격증명 설정
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+    
+    - name: Lambda 함수 배포
+      run: |
+        zip -r function.zip lambda_function.py
+        aws lambda update-function-code \
+          --function-name my-test-lambda \
+          --zip-file fileb://function.zip
+    
+    - name: 배포 완료
+      run: echo "✅ Lambda 함수 배포 완료!"
