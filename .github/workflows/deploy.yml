@@ -20,20 +20,16 @@ jobs:
     
     - name: 변경된 Lambda 함수만 배포
       run: |
-        # 변경된 파일 확인
-        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
-        echo "변경된 파일들: $CHANGED_FILES"
-        
-        # lambda_function.py가 변경되었으면 배포
-        if echo "$CHANGED_FILES" | grep -q "lambda_function.py"; then
-          echo "lambda_function.py 변경 감지 - 배포 시작"
+        # lambda_function.py 파일이 존재하면 배포 (첫 배포용)
+        if [ -f "lambda_function.py" ]; then
+          echo "lambda_function.py 파일 발견 - 배포 시작"
           zip -r function.zip lambda_function.py
           aws lambda update-function-code \
             --function-name my-test-lambda \
             --zip-file fileb://function.zip
           echo "✅ my-test-lambda 배포 완료!"
         else
-          echo "lambda_function.py 변경 없음 - 배포 건너뜀"
+          echo "lambda_function.py 파일 없음 - 배포 건너뜀"
         fi
     
     - name: 배포 완료
