@@ -12,7 +12,7 @@ def lambda_handler(event, context):
         
         # 비즈니스 로직
         result = {
-            'message': '안녕하세요! 자동 배포된 Lambda 함수입니다.',
+            'message': '안녕하세요! CI/CD 테스트 중입니다!',
             'input_data': body,
             'version': '1.0.0'
         }
